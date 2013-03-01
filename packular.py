@@ -34,6 +34,10 @@ DEFAULT_CONFIG = dict(
         url_tmpl = [],
 )
 
+# used only when no command line arguments are provided
+# and the file exists
+DEFAULT_CONF_FILE = 'packular.conf'
+
 # Templates
 SCRIPT = """<script src="%s"></script>"""
 LINK = """<link rel="stylesheet" href="%s" />"""
@@ -142,14 +146,17 @@ def configure():
 
     opts, parser = parse_options(DEFAULT_CONFIG)
 
+    # no command line options and no config file
+    if len(sys.argv) == 1 and not opts.conf_file:
+        if osp.isfile(DEFAULT_CONF_FILE):
+            opts.conf_file = DEFAULT_CONF_FILE
+        else:
+            parser.print_help()
+            sys.exit(1)
     # re-parse with config file values as defaults
     if opts.conf_file:
         cfg = read_config(opts.conf_file, DEFAULT_CONFIG)
         opts, _ = parse_options(cfg)
-    # no config and no command line options
-    elif len(sys.argv) == 1:
-        parser.print_help()
-        sys.exit(1)
 
     return opts
 
