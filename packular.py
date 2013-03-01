@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""Packular reads lists of required JavaScript and CSS files,
+"""Packular reads lists of required JavaScript, CSS, and partial HTML files,
 and downloads/combines/references them in index.html files for use in
 development and production.
 """
@@ -240,10 +240,12 @@ def prod_tmpl(opts):
         data = file('.' + url).read(). \
                 replace('"', r'\"').replace('\n', r'\n')
         # angular would not cache the empty string
+        print url
         return url, data or "<!-- empty -->"
 
     tmpls = [TMPL % html2js(url) for url in opts.url_tmpl]
 
+    print "->", opts.prod_tmpl
     with file(opts.prod_tmpl, 'w') as tmpl:
         tmpl.write(ANGULAR % ('\n'.join(tmpls),))
 
