@@ -15,17 +15,17 @@ provide another filename.
 Sample config file::
 
     [DEFAULT]
-    # default options apply to all ``target:`` blocks
+    # default options apply to all ``target:`` blocks and can be
+    # overriden on the command line
 
     # you may define a version ID and interpolate it into values below
     version = 9c2a5d2096dbb
-    # (actually you can define any number of such variables)
 
     # source template for index.html
     template = index-template.html
 
-    # download external files into these directories
-    download_remote = true
+    # download remote files into these directories
+    download = true
     dir_js = lib
     dir_css = lib
 
@@ -33,34 +33,37 @@ Sample config file::
     prefix_js = ./app/
     prefix_css = ./app/
 
-    [angular]
-    # combine list of partials below into template cache file
-    template_cache = template-cache.js
+    # specify default targets for file lists below, default is all targets
+    javascript = dev,test,prod
+    css = dev,test,prod
+    partial = test,prod
 
-    # empty cache for development
-    template_empty = no-template-cache.js
+    [target:prod]
+    index = index-production.html
+    download = false
+
+    # combine list of partials below into template cache file
+    combine_partial = template-cache.js
+
+    # combine all JS/CSS sources into one file
+    combine_js = production.js
+    combine_css = production.css
+
+    # overwrite some of the defaults -- the version is set above in [DEFAULT]
+    prefix_js = http://cdn.example.org/static/%(version)s/js/
+    prefix_css = http://cdn.example.org/static/%(version)s/css/
 
     [target:dev]
 
     # index.html generated for this target
     index = index-development.html
 
+    # empty cache for development
+    combine_partial = no-template-cache.js
+
     [target:test]
     index = index-test.html
-
-    [target:prod]
-    index = index-production.html
-
-    # combine all JS/CSS sources into one file
-    combine_js = production.js
-    combine_css = production.css
-
-    # include external source through their own urls
-    download_remote = false
-
-    # overwrite some of the defaults
-    prefix_js = http://cdn.example.org/static/%(version)s/js/
-    prefix_css = http://cdn.example.org/static/%(version)s/js/
+    combine_partial = template-cache.js
 
     [javascript]
 
@@ -76,8 +79,7 @@ Sample config file::
     # include in test index.html only
     mocks.js = test
 
-    # detected as remote source. downloaded for development,
-    # but included as-is for production
+    # remote resources start with //
     //ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
 
     [css]
@@ -87,36 +89,22 @@ Sample config file::
     test.html
 
 
-Command line options can only create one target::
+Command line options::
 
-    Options:
-      -h, --help            show this help message and exit
-      -C CONF_FILE, --config=CONF_FILE
-                            Packular configuration file
-      --index-template=INDEX_TMPL
-                            Input template file for index.html
-      --index-dev=INDEX_DEV
-                            Output index.html for development
-      --index-prod=INDEX_PROD
-                            Output index.html for production
-      --outdir_js=OUTDIR_JS
-                            Output directory for downloaded JavaScript files
-      --outdir_css=OUTDIR_CSS
-                            Output directory for downloaded StyleSheet files
-      --combine-js=PROD_JS
-                            Output filename minified JavaScript for production
-      --combine-css=PROD_CSS
-                            Output filename minified CSS for production
-      --combine-tmpl=PROD_TMPL
-                            Output filename cached templates for production
-      --empty-tmpl=DEVL_TMPL
-                            Output filename empty template cache for development
-      -j URL_JS, --javascript=URL_JS
-                            JavaScript URL, use once for each file
-      -c URL_CSS, --css=URL_CSS
-                            StyleSheet URL, use once for each file
-      -p URL_TMPL, --partial=URL_TMPL
-                            Partial HTML URL, use once for each file
+    usage: packular [-h] [-S [KEY=VALUE [KEY=VALUE ...]]] [CONFIG_FILE]
+
+    positional arguments:
+      CONFIG_FILE           Packular configuration file (default packular.conf)
+
+    optional arguments:
+          -S [KEY=VALUE [KEY=VALUE ...]]
+                            Overwrite config file variables
+
+
+Example::
+
+    packular -S version=`git rev-parse HEAD`
+
 
 
 Angular usage::
