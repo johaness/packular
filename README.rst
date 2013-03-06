@@ -3,7 +3,14 @@ packular
 
 Packular reads lists of required JavaScript, CSS, and partial HTML files,
 and downloads/combines/references them in index.html files for use in
-development and production.
+development and production. It supports pre-loading AngularJS templates
+via ``$templateCache``.
+
+Packular is a Python solution without any dependencies.
+If you are looking for a JavaScript based implementation with similar
+features, `grunt`_ is a good match.
+
+.. _grunt: http://gruntjs.com/
 
 packular.conf
 =============
