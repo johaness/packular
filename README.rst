@@ -9,7 +9,7 @@ packular.conf
 =============
 
 When no command line options are given, packular will try to read 
-``packular.conf`` in the current directory. Use ``packular -C config_file`` to 
+``packular.conf`` in the current directory. Use ``packular config_file`` to 
 provide another filename. 
 
 Sample config file::
