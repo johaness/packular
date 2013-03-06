@@ -3,42 +3,90 @@ packular
 
 Packular reads lists of required JavaScript, CSS, and partial HTML files,
 and downloads/combines/references them in index.html files for use in
-development and production.
+development and production. It supports pre-loading AngularJS templates
+via ``$templateCache``.
+
+Packular is a Python solution without any dependencies.
+If you are looking for a JavaScript based implementation with similar
+features, `grunt`_ is a good match.
+
+.. _grunt: http://gruntjs.com/
 
 packular.conf
 =============
 
 When no command line options are given, packular will try to read 
-``packular.conf`` in the current directory. Use ``packular -C config_file`` to 
+``packular.conf`` in the current directory. Use ``packular config_file`` to 
 provide another filename. 
 
 Sample config file::
 
-    [index]
-    template = index-template.html
-    dev = index-development.html
-    prod = index-production.html
+    [DEFAULT]
+    # default options apply to all ``target:`` blocks and can be
+    # overriden on the command line
 
-    [output]
-    # download external files into these directories
+    # you may define a version ID and interpolate it into values below
+    version = 9c2a5d2096dbb
+
+    # source template for index.html
+    template = index-template.html
+
+    # download remote files into these directories
+    download = true
     dir_js = lib
     dir_css = lib
-    # merge local files into these files
-    prod_js = production.js
-    prod_css = production.css
-    # combine partials into template cache for production
-    prod_tmpl = mytmpl.js
-    # empty template cache for development
-    dev_tmpl = no-tmpl.js
+
+    # prefix for all URLs inserted into index.html
+    prefix_js = ./app/
+    prefix_css = ./app/
+
+    # specify default targets for file lists below, default is all targets
+    javascript = dev,test,prod
+    css = dev,test,prod
+    partial = test,prod
+
+    [target:prod]
+    index = index-production.html
+    download = false
+
+    # combine list of partials below into template cache file
+    combine_partial = template-cache.js
+
+    # combine all JS/CSS sources into one file
+    combine_js = production.js
+    combine_css = production.css
+
+    # overwrite some of the defaults -- the version is set above in [DEFAULT]
+    prefix_js = http://cdn.example.org/static/%(version)s/js/
+    prefix_css = http://cdn.example.org/static/%(version)s/css/
+
+    [target:dev]
+
+    # index.html generated for this target
+    index = index-development.html
+
+    # empty cache for development
+    combine_partial = no-template-cache.js
+
+    [target:test]
+    index = index-test.html
+    combine_partial = template-cache.js
 
     [javascript]
+
+    # included in all index.html
     test.js
+
     # include in development index.html only
-    ?no-tmpl.js
-    # include in production index.html only
-    !mytmpl.js
-    # detected as remote source. downloaded for development,
-    # but included as-is for production
+    no-template-cache.js = dev
+
+    # include in production and testing index.html only
+    template-cache.js = prod,test
+
+    # include in test index.html only
+    mocks.js = test
+
+    # remote resources start with //
     //ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js
 
     [css]
@@ -50,34 +98,20 @@ Sample config file::
 
 Command line options::
 
-    Options:
-      -h, --help            show this help message and exit
-      -C CONF_FILE, --config=CONF_FILE
-                            Packular configuration file
-      --index-template=INDEX_TMPL
-                            Input template file for index.html
-      --index-dev=INDEX_DEV
-                            Output index.html for development
-      --index-prod=INDEX_PROD
-                            Output index.html for production
-      --outdir_js=OUTDIR_JS
-                            Output directory for downloaded JavaScript files
-      --outdir_css=OUTDIR_CSS
-                            Output directory for downloaded StyleSheet files
-      --prod-js=PROD_JS     Output filename minified JavaScript for production
-      --prod-css=PROD_CSS   Output filename minified CSS for production
-      --prod-tmpl=PROD_TMPL
-                            Output filename cached templates for production
-      --dev-tmpl=DEVL_TMPL  Output filename empty template cache for development
-      -j URL_JS, --javascript=URL_JS
-                            JavaScript URL, use once for each file. URLs from the
-                            config file are written first. Prefix filename with !
-                            to include in production only, ? to include in
-                            development only.
-      -c URL_CSS, --css=URL_CSS
-                            StyleSheet URL, use once for each file
-      -p URL_TMPL, --partial=URL_TMPL
-                            Partial HTML URL, use once for each file
+    usage: packular [-h] [-S [KEY=VALUE [KEY=VALUE ...]]] [CONFIG_FILE]
+
+    positional arguments:
+      CONFIG_FILE           Packular configuration file (default packular.conf)
+
+    optional arguments:
+          -S [KEY=VALUE [KEY=VALUE ...]]
+                            Overwrite config file variables
+
+
+Example::
+
+    packular -S version=`git rev-parse HEAD`
+
 
 
 Angular usage::
