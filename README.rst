@@ -55,6 +55,9 @@ Sample config file::
     combine_js = production.js
     combine_css = production.css
 
+    # include external source through their own urls
+    download_remote = false
+
     # overwrite some of the defaults
     prefix_js = http://cdn.example.org/static/%(version)s/js/
     prefix_css = http://cdn.example.org/static/%(version)s/js/
