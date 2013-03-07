@@ -11,6 +11,7 @@ from pprint import pformat
 from itertools import chain
 import os.path as osp
 from subprocess import check_output, STDOUT
+from glob import glob
 
 
 # used only when no command line arguments are provided
@@ -116,7 +117,8 @@ def read_config(config_file, defaults):
                 continue
             includes = cfg.get(file_section, option, None)
             for incl in (includes and includes.split(',')) or default_includes:
-                append(targets[incl.strip()])(option)
+                for exp in (remote_url(option) and [option] or glob(option)):
+                    append(targets[incl.strip()])(exp)
 
     if cfg.has_section('javascript'):
         file_list('javascript', lambda t: t.url_js.append)
