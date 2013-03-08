@@ -110,14 +110,14 @@ def read_config(config_file, defaults):
         if default_spec is not None:
             default_includes = default_spec.split(',')
         else:
-            default_includes = targets.items()
+            default_includes = targets.keys()
 
         for option in cfg.options(file_section):
             if cfg.has_option('DEFAULT', option):
                 continue
             includes = cfg.get(file_section, option, None)
             for incl in (includes and includes.split(',')) or default_includes:
-                for exp in (remote_url(option) and [option] or glob(option)):
+                for exp in (remote_url(option) and [option]) or glob(option):
                     append(targets[incl.strip()])(exp)
 
     if cfg.has_section('javascript'):
