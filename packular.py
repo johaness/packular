@@ -118,7 +118,7 @@ def read_config(config_file, defaults):
             includes = cfg.get(file_section, option, None)
             for incl in (includes and includes.split(',')) or default_includes:
                 for exp in (remote_url(option) and [option]) or \
-                        glob('./' + option):
+                        glob(option):
                     append(targets[incl.strip()])(exp)
 
     if cfg.has_section('javascript'):
@@ -212,7 +212,7 @@ def partials(filename, urls):
 def prefix(iterable, pfx):
     """Prepend ``pfx`` to all items in ``iterable``"""
     for elm in iterable:
-        if remote_url('//'):
+        if remote_url(pfx):
             yield elm
         else:
             yield pfx + elm
