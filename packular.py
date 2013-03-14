@@ -155,7 +155,7 @@ def make_local(urls, out_dir, __nonlocal_cache=[[]]):
     download non-local ``urls`` into ``out_dir``
     return generator of all-local urls
     """
-    CURL = 'curl -s -o %s %s'
+    CURL = 'curl -s -f -o %s %s'
 
     for url in urls:
         remote = remote_url(url)
