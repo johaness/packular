@@ -115,6 +115,7 @@ def read_config(config_file, defaults):
         for option in cfg.options(file_section):
             if cfg.has_option('DEFAULT', option):
                 continue
+            option = option.decode('string_escape')
             includes = cfg.get(file_section, option, None)
             for incl in (includes and includes.split(',')) or default_includes:
                 for exp in (remote_url(option) and [option]) or \
