@@ -12,6 +12,7 @@ from itertools import chain
 import os.path as osp
 from subprocess import check_output, STDOUT
 from glob import glob
+from urlparse import urlparse
 
 
 # used only when no command line arguments are provided
@@ -162,7 +163,8 @@ def make_local(urls, out_dir, __nonlocal_cache=[[]]):
         remote = remote_url(url)
         if remote:
             remote = remote.replace('.min.', '.')
-            fname = osp.join(out_dir, osp.basename(remote))
+            fname = osp.join(out_dir,
+                             osp.basename(urlparse(remote).path.rstrip('/')))
             if not fname in __nonlocal_cache[0]:
                 print "  Download:", remote
                 __nonlocal_cache[0].append(fname)
