@@ -165,7 +165,7 @@ def make_local(urls, out_dir, __nonlocal_cache=[[]]):
             remote = remote.replace('.min.', '.')
             fname = osp.join(out_dir,
                              osp.basename(urlparse(remote).path.rstrip('/')))
-            if not fname in __nonlocal_cache[0]:
+            if not (osp.isfile(fname) or fname in __nonlocal_cache[0]):
                 print "  Download:", remote
                 __nonlocal_cache[0].append(fname)
                 curl = CURL % (fname, remote,)
