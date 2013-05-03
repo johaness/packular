@@ -215,7 +215,7 @@ def partials(filename, urls):
 def prefix(iterable, pfx):
     """Prepend ``pfx`` to all items in ``iterable``"""
     for elm in iterable:
-        if remote_url(pfx):
+        if remote_url(elm):
             yield elm
         else:
             yield pfx + elm
