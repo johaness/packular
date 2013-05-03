@@ -204,7 +204,7 @@ def partials(filename, urls):
         data = file('./' + url).read(). \
                 replace('"', r'\"').replace('\n', r'\n')
         # angular would not cache the empty string
-        return url, data or "<!-- empty -->"
+        return '/' + url, data or "<!-- empty -->"
 
     tmpls = [TMPL % html2js(url) for url in urls]
 
