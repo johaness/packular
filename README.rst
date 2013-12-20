@@ -54,6 +54,9 @@ Sample config file::
 
     # combine all JS/CSS sources into one file
     combine_js = production.js
+    # but include under a different name in the generated HTML
+    # (allows for running eg. minification on the output of combine_js)
+    include_js = production-min.js
     combine_css = production.css
 
     # overwrite some of the defaults -- the version is set above in [DEFAULT]

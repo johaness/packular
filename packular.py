@@ -100,6 +100,8 @@ def read_config(config_file, defaults):
                 combine_js  = cfg.get(sect, 'combine_js', None),
                 combine_css = cfg.get(sect, 'combine_css', None),
                 combine_prt = cfg.get(sect, 'combine_partial', None),
+                include_js  = cfg.get(sect, 'include_js', None),
+                include_css = cfg.get(sect, 'include_css', None),
                 url_js   = [],
                 url_css  = [],
                 url_html = [],
@@ -177,7 +179,7 @@ def make_local(urls, out_dir, __nonlocal_cache=[[]]):
             yield url
 
 
-def combine_local(urls, fname):
+def combine_local(urls, fname, out_name=None):
     """
     merge content of all local ``urls`` into one file `fname`
     return generator of non-local urls
@@ -193,7 +195,7 @@ def combine_local(urls, fname):
     with file(fname, 'w') as comb:
         comb.write('\n'.join(combine))
 
-    yield fname
+    yield out_name or fname
 
 
 def partials(filename, urls):
@@ -234,11 +236,15 @@ def build(target):
 
     if target.combine_css:
         print "  Combine CSS:", target.combine_css
-        target.url_css = combine_local(target.url_css, target.combine_css)
+        target.url_css = combine_local(
+                target.url_css, target.combine_css, target.include_css
+        )
 
     if target.combine_js:
         print "  Combine JS:", target.combine_js
-        target.url_js = combine_local(target.url_js, target.combine_js)
+        target.url_js = combine_local(
+                target.url_js, target.combine_js, target.include_js
+        )
 
     if target.prefix_js:
         print "  Adding JS Prefix:", target.prefix_js
