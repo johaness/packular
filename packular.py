@@ -122,7 +122,7 @@ def read_config(config_file, defaults):
             includes = cfg.get(file_section, option, None)
             for incl in (includes and includes.split(',')) or default_includes:
                 for exp in (remote_url(option) and [option]) or \
-                        glob(option) or [option]:
+                        sorted(glob(option)) or [option]:
                     append(targets[incl.strip()])(exp)
 
     if cfg.has_section('javascript'):
