@@ -57,9 +57,9 @@ class _NoDefault:
 
 
 class DefaultConfigParser(ConfigParser):
-    """ConfigParser with default parameter in get()"""
+    """ConfigParser with default parameter in get() for Python 2.x"""
 
-    def get(self, section, option, default=_NoDefault):
+    def get(self, section, option, default=_NoDefault, **py3_compat):
         """return ``option`` from ``section``, ``default`` if not found"""
         try:
             return ConfigParser.get(self, section, option)
@@ -125,7 +125,8 @@ def read_config(config_file, defaults):
         for option in cfg.options(file_section):
             if cfg.has_option('DEFAULT', option):
                 continue
-            option = option.decode('string_escape')
+            if not PY3:
+                option = option.decode('string_escape')
             includes = cfg.get(file_section, option, None)
             for incl in (includes and includes.split(',')) or default_includes:
                 for exp in (remote_url(option) and [option]) or \
@@ -196,9 +197,9 @@ def combine_local(urls, fname, out_name=None):
         if url.startswith('//'):
             yield url
         else:
-            combine.append(file('./' + url).read())
+            combine.append(open('./' + url).read())
 
-    with file(fname, 'w') as comb:
+    with open(fname, 'w') as comb:
         comb.write('\n'.join(combine))
 
     yield out_name or fname
@@ -209,14 +210,14 @@ def partials(filename, urls):
 
     def html2js(url):
         """convert HTML into JavaScript string"""
-        data = file('./' + url).read(). \
+        data = open('./' + url).read(). \
                 replace('"', r'\"').replace('\n', r'\n')
         # angular would not cache the empty string
         return '/' + url, data or "<!-- empty -->"
 
     tmpls = [TMPL % html2js(url) for url in urls]
 
-    with file(filename, 'w') as tmpl:
+    with open(filename, 'w') as tmpl:
         tmpl.write(ANGULAR % ('\n'.join(tmpls),))
 
 
@@ -266,8 +267,8 @@ def build(target):
             ))
 
     print("  Write Index:", target.index)
-    template = file(target.template).read()
-    with file(target.index, 'w') as index:
+    template = open(target.template).read()
+    with open(target.index, 'w') as index:
         index.write(template.replace(AUTOGEN, html_out))
 
 
