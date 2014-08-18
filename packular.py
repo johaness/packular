@@ -5,6 +5,7 @@ and downloads/combines/references them in index.html files for use in
 development and production.
 """
 
+from __future__ import print_function
 import sys
 PY3 = sys.version_info >= (3, )
 
