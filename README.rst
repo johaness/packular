@@ -45,6 +45,11 @@ Sample config file::
     css = dev,test,prod
     partial = test,prod
 
+    # any non reserved options will be passed as context variables when
+    # rendering the template. they can be used in the template using the
+    # python `format` dictionory interpolation style e.g. {custom_favicon}
+    custom_favicon = favicon.ico
+
     [target:prod]
     index = index-production.html
     download = false
@@ -62,6 +67,9 @@ Sample config file::
     # overwrite some of the defaults -- the version is set above in [DEFAULT]
     prefix_js = http://cdn.example.org/static/%(version)s/js/
     prefix_css = http://cdn.example.org/static/%(version)s/css/
+
+    # override variable value
+    custom_favicon = favicon.png
 
     [target:dev]
 

@@ -96,6 +96,11 @@ def read_config(config_file, defaults):
     for key, value in defaults.items():
         cfg.set('DEFAULT', key, value)
 
+    known_keys = ['template', 'index', 'downlaod', 'outdir_js', 'outdir_css',
+                  'prefix_js', 'prefix_css', 'combine_js', 'combine_css',
+                  'combine_partial', 'include_js', 'include_css', 'url_js',
+                  'url_css', 'url_html', 'partial']
+
     targets = dict((sect[PFX_LEN:], Target(
                 template    = cfg.get(sect, 'template'),
                 index       = cfg.get(sect, 'index'),
@@ -113,6 +118,8 @@ def read_config(config_file, defaults):
                 url_js   = [],
                 url_css  = [],
                 url_html = [],
+                variables={k: cfg.get(sect, k, None) for k in [
+                    opt for opt in cfg.options(sect) if opt not in known_keys]},
                 ))
             for sect in cfg.sections() if sect.startswith('target:'))
 
@@ -270,6 +277,7 @@ def build(target):
     print("  Write Index:", target.index)
     template = open(target.template).read()
     with open(target.index, 'w') as index:
+        template = template.format(**target.variables)
         index.write(template.replace(AUTOGEN, html_out))
 
 
