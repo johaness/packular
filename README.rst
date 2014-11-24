@@ -47,7 +47,7 @@ Sample config file::
 
     # any non reserved options will be passed as context variables when
     # rendering the template. they can be used in the template using the
-    # python `format` dictionory interpolation style e.g. {custom_favicon}
+    # python dictionory interpolation format e.g. %(custom_favicon)s
     custom_favicon = favicon.ico
 
     [target:prod]

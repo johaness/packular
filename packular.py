@@ -278,7 +278,7 @@ def build(target):
     print("  Write Index:", target.index)
     template = open(target.template).read()
     with open(target.index, 'w') as index:
-        template = template.format(**target.context)
+        template = template % target.context
         index.write(template.replace(AUTOGEN, html_out))
 
 
