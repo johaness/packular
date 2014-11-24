@@ -1,7 +1,7 @@
 from setuptools import setup
 import importlib
 
-VERSION = '0.0.5'
+VERSION = '0.0.6'
 NAME = 'packular'
 
 setup(
