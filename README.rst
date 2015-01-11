@@ -57,6 +57,9 @@ Sample config file::
     # combine list of partials below into template cache file
     combine_partial = template-cache.js
 
+    # preprocess HTML by piping HTML into provided UNIX command
+    html_preprocessor = html-minifier --remove-comments
+
     # combine all JS/CSS sources into one file
     combine_js = production.js
     # but include under a different name in the generated HTML
