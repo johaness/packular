@@ -15,15 +15,15 @@ features, `grunt`_ is a good match.
 packular.conf
 =============
 
-When no command line options are given, packular will try to read 
-``packular.conf`` in the current directory. Use ``packular config_file`` to 
-provide another filename. 
+When no command line options are given, packular will try to read
+``packular.conf`` in the current directory. Use ``packular config_file`` to
+provide another filename.
 
 Sample config file::
 
     [DEFAULT]
     # default options apply to all ``target:`` blocks and can be
-    # overriden on the command line
+    # overridden on the command line
 
     # you may define a version ID and interpolate it into values below
     version = 9c2a5d2096dbb
@@ -47,7 +47,7 @@ Sample config file::
 
     # any non reserved options will be passed as context variables when
     # rendering the template. they can be used in the template using the
-    # python dictionory interpolation format e.g. %(custom_favicon)s
+    # python dictionary interpolation format e.g. %(custom_favicon)s
     custom_favicon = favicon.ico
 
     [target:prod]
