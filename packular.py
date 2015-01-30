@@ -80,7 +80,7 @@ class DefaultConfigParser(ConfigParser):
     """ConfigParser with default parameter in get() for Python 2.x"""
 
     def __init__(self, *args, **kwargs):
-        if kwargs.get('ignore_colon') is True:
+        if kwargs.pop('ignore_colon') is True:
             # Don't consider colon character (':') as key/value separator, allows its use in URL as port delimiter
             self.OPTCRE = re.compile(ConfigParser.OPTCRE.pattern.replace(':=', '='), ConfigParser.OPTCRE.flags)
             self.OPTCRE_NV = re.compile(ConfigParser.OPTCRE_NV.pattern.replace(':=', '='), ConfigParser.OPTCRE_NV.flags)
@@ -109,13 +109,16 @@ def parse_options():
     opt.add_argument('-S', metavar="KEY=VALUE", type=str, nargs='*',
             help = "Overwrite config file variables, e.g. version=2.0")
 
+    opt.add_argument('--ignore_colon', action='store_true', default=False,
+                     help = "Don't consider colon character (':') as key/value separator")
+
     return opt.parse_args()
 
 
-def read_config(config_file, defaults):
+def read_config(config_file, defaults, ignore_colon):
     """read configuration file"""
 
-    cfg = DefaultConfigParser(allow_no_value=True)
+    cfg = DefaultConfigParser(allow_no_value=True, ignore_colon=ignore_colon)
     cfg.readfp(config_file)
 
     # override w/ command line arguments
@@ -168,7 +171,7 @@ def configure():
     opts = parse_options()
     defaults = dict(v.split('=') for v in opts.S or [])
     with open(opts.config_file) as config:
-        return read_config(config, defaults)
+        return read_config(config, defaults, opts.ignore_colon)
 
 
 def remote_url(url):
