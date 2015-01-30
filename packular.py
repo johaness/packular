@@ -23,6 +23,7 @@ import shlex
 from subprocess import check_output, STDOUT
 from glob import glob
 from collections import defaultdict
+import re
 
 
 # used only when no command line arguments are provided
@@ -77,6 +78,13 @@ class _NoDefault:
 
 class DefaultConfigParser(ConfigParser):
     """ConfigParser with default parameter in get() for Python 2.x"""
+
+    def __init__(self, *args, **kwargs):
+        if kwargs.get('ignore_colon') is True:
+            # Don't consider colon character (':') as key/value separator, allows its use in URL as port delimiter
+            self.OPTCRE = re.compile(ConfigParser.OPTCRE.pattern.replace(':=', '='), ConfigParser.OPTCRE.flags)
+            self.OPTCRE_NV = re.compile(ConfigParser.OPTCRE_NV.pattern.replace(':=', '='), ConfigParser.OPTCRE_NV.flags)
+        ConfigParser.__init__(self, *args, **kwargs)
 
     def get(self, section, option, default=_NoDefault, **py3_compat):
         """return ``option`` from ``section``, ``default`` if not found"""
