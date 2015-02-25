@@ -176,7 +176,7 @@ def configure():
     with open(opts.config_file) as config:
         targets = read_config(config, defaults, opts.ignore_colon)
     if opts.T:
-        return {k: targets[k] for k in targets if k == opts.T}
+        return {opts.T: targets[opts.T]}
     else:
         return targets
 
